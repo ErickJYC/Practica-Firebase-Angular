@@ -1,0 +1,226 @@
+
+<div class="contenedor-productos">
+
+  <h1>Inventario de productos</h1>
+
+  <!-- AUTENTICACIÓN -->
+  <div class="autenticacion">
+    @if (usuario()) {
+      <p>Sesión iniciada: {{ usuario()?.displayName }}</p>
+
+      <button type="button" (click)="cerrarSesion()">
+        Cerrar sesión
+      </button>
+    } @else {
+      <button type="button" (click)="iniciarSesion()">
+        Iniciar sesión con Google
+      </button>
+    }
+  </div>
+
+  <p>Productos almacenados en Cloud Firestore</p>
+
+  <!-- MENSAJES -->
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (mensaje()) {
+    <p class="exito">{{ mensaje() }}</p>
+  }
+
+  <!-- FORMULARIO PARA CREAR Y ACTUALIZAR -->
+  @if (usuario()) {
+
+    <section class="formulario-producto">
+
+      <h2>
+        @if (editandoId()) {
+          Editar producto
+        } @else {
+          Agregar producto
+        }
+      </h2>
+
+      <form (ngSubmit)="guardarProducto()">
+
+        <div class="campos">
+
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              name="nombre"
+              [(ngModel)]="formulario.nombre"
+              required
+            >
+          </div>
+
+          <div class="campo">
+            <label for="precio">Precio</label>
+            <input
+              id="precio"
+              type="number"
+              name="precio"
+              [(ngModel)]="formulario.precio"
+              min="0"
+              step="0.01"
+              required
+            >
+          </div>
+
+          <div class="campo">
+            <label for="stock">Stock</label>
+            <input
+              id="stock"
+              type="number"
+              name="stock"
+              [(ngModel)]="formulario.stock"
+              min="0"
+              step="1"
+              required
+            >
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <input
+              id="categoria"
+              type="text"
+              name="categoria"
+              [(ngModel)]="formulario.categoria"
+              required
+            >
+          </div>
+
+        </div>
+
+        <div class="acciones">
+
+          <button type="submit" [disabled]="guardando()">
+            @if (guardando()) {
+              Guardando...
+            } @else if (editandoId()) {
+              Guardar cambios
+            } @else {
+              Agregar producto
+            }
+          </button>
+
+          @if (editandoId()) {
+            <button
+              type="button"
+              class="boton-secundario"
+              (click)="cancelarEdicion()"
+              [disabled]="guardando()"
+            >
+              Cancelar
+            </button>
+          }
+
+        </div>
+
+      </form>
+
+    </section>
+  }
+
+  <!-- CONSULTAR PRODUCTOS -->
+  <div class="encabezado-lista">
+
+    <h2>Total de productos: {{ productos().length }}</h2>
+
+    <button
+      type="button"
+      (click)="cargarProductos()"
+      [disabled]="cargando()"
+    >
+      Actualizar productos
+    </button>
+
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando productos...</p>
+  }
+
+  <!-- TABLA HTML DE PRODUCTOS -->
+  @if (!cargando()) {
+
+    <div class="tabla-contenedor">
+
+      <table class="tabla-productos">
+
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Categoría</th>
+
+            @if (usuario()) {
+              <th>Acciones</th>
+            }
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (producto of productos(); track producto.id) {
+
+            <tr>
+
+              <td>{{ producto.nombre }}</td>
+              <td>${{ producto.precio }}</td>
+              <td>{{ producto.stock }}</td>
+              <td>{{ producto.categoria }}</td>
+
+              @if (usuario()) {
+
+                <td>
+                  <div class="acciones-tabla">
+
+                    <button
+                      type="button"
+                      (click)="editarProducto(producto)"
+                      [disabled]="guardando()"
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      type="button"
+                      class="boton-eliminar"
+                      (click)="eliminarProducto(producto)"
+                      [disabled]="guardando()"
+                    >
+                      Eliminar
+                    </button>
+
+                  </div>
+                </td>
+
+              }
+
+            </tr>
+
+          } @empty {
+
+            <tr>
+              <td [attr.colspan]="usuario() ? 5 : 4">
+                No hay productos registrados.
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

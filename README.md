@@ -1,59 +1,154 @@
-# PracticaFirebaseAngular
+# Práctica CRUD de Productos — Angular y Firebase
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.6.
+## Descripción
 
-## Development server
+Aplicación web desarrollada con Angular y Firebase para administrar un inventario de productos mediante operaciones CRUD (Crear, Leer, Actualizar y Eliminar).
 
-To start a local development server, run:
+Este proyecto corresponde a la práctica individual de la asignatura Programación de Plataformas Web de la Universidad Politécnica Salesiana.
 
-```bash
-ng serve
+## Tecnologías utilizadas
+
+- Angular 22
+- TypeScript
+- HTML y CSS
+- Firebase Authentication
+- Cloud Firestore
+- Firebase JavaScript SDK
+- Git y GitHub
+- Vercel para el despliegue
+
+## Funcionalidades
+
+### Crear productos (CREATE)
+
+Permite registrar nuevos productos mediante un formulario con los campos nombre, precio, stock y categoría.
+
+### Consultar productos (READ)
+
+Recupera los documentos de la colección `productos` de Cloud Firestore y los presenta en una tabla HTML.
+
+### Actualizar productos (UPDATE)
+
+Permite seleccionar un producto, modificar sus datos y guardar los cambios en Firestore.
+
+### Eliminar productos (DELETE)
+
+Permite eliminar productos después de mostrar una ventana de confirmación.
+
+### Autenticación
+
+La aplicación utiliza Firebase Authentication con Google para iniciar y cerrar sesión.
+
+Los visitantes pueden consultar el inventario sin iniciar sesión. Las operaciones de modificación requieren autenticación y están restringidas mediante las reglas de seguridad de Firestore.
+
+## Modelo de datos
+
+La colección de Cloud Firestore se llama `productos`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| nombre | string | Nombre del producto |
+| precio | number | Precio del producto |
+| stock | number | Cantidad disponible |
+| categoria | string | Categoría del producto |
+
+Cada documento posee un identificador único generado por Firestore o asignado al crearlo desde la consola.
+
+## Estructura principal
+
+```text
+src/
+└── app/
+    ├── components/
+    │   └── productos/
+    │       ├── productos.ts
+    │       ├── productos.html
+    │       └── productos.css
+    ├── services/
+    │   └── producto.ts
+    ├── firebase.ts
+    ├── app.ts
+    └── app.html
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Configuración de Firebase
 
-## Code scaffolding
+1. Crear un proyecto en Firebase Console.
+2. Habilitar Cloud Firestore.
+3. Crear la colección `productos`.
+4. Habilitar el proveedor Google en Firebase Authentication.
+5. Registrar una aplicación web en Firebase.
+6. Configurar las credenciales públicas de la aplicación en `src/app/firebase.ts`.
+7. Configurar las reglas de Firestore para permitir consultas y restringir las operaciones de escritura a los usuarios autorizados.
+8. Agregar el dominio donde se despliegue la aplicación a los dominios autorizados de Firebase Authentication, según corresponda.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+La aplicación utiliza el SDK de Firebase para JavaScript.
 
-```bash
-ng generate component component-name
-```
+## Instalación y ejecución local
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Requisitos
 
-```bash
-ng generate --help
-```
+- Node.js y npm
+- Angular CLI
+- Proyecto Firebase configurado
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Instalar dependencias
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Ejecutar la aplicación
 
 ```bash
-ng e2e
+npx ng serve -o
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+La aplicación estará disponible en:
 
-## Additional Resources
+http://localhost:4200
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Compilación
+
+Para generar la versión de producción:
+
+```bash
+npm run build
+```
+
+Los archivos compilados se generan en el directorio de salida configurado por Angular.
+
+## Validaciones
+
+El formulario verifica que:
+
+- El nombre no esté vacío.
+- La categoría no esté vacía.
+- El precio sea un número válido y no sea negativo.
+- El stock sea un número entero y no sea negativo.
+
+Además, la aplicación solicita confirmación antes de eliminar un producto.
+
+## Pruebas realizadas
+
+Se realizaron pruebas de creación, consulta, actualización y eliminación de productos.
+
+También se comprobaron las validaciones del formulario, la cancelación de una eliminación y la persistencia de los datos de Firestore al recargar la aplicación.
+
+## Despliegue
+
+Plataforma: Vercel.
+
+**URL de la aplicación:** Pendiente de despliegue.
+
+## Repositorio
+
+**GitHub:** Pendiente de publicación.
+
+## Autor
+
+Erick Josue Yunga Chimbo
+
+Universidad Politécnica Salesiana
+
+Asignatura: Programación de Plataformas Web
