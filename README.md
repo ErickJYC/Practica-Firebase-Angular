@@ -137,13 +137,15 @@ También se comprobaron las validaciones del formulario, la cancelación de una 
 
 ## Despliegue
 
-Plataforma: Vercel.
+Aplicación publicada en Vercel:
 
-**URL de la aplicación:** Pendiente de despliegue.
+https://practica-firebase-angular.vercel.app
 
 ## Repositorio
 
-**GitHub:** Pendiente de publicación.
+Código fuente disponible en GitHub:
+
+https://github.com/ErickJYC/Practica-Firebase-Angular
 
 ## Autor
 
