@@ -126,20 +126,12 @@
     </section>
   }
 
-  <!-- CONSULTAR PRODUCTOS -->
-  <div class="encabezado-lista">
+<!-- CONSULTAR PRODUCTOS EN TIEMPO REAL -->
+<div class="encabezado-lista">
 
-    <h2>Total de productos: {{ productos().length }}</h2>
+  <h2>Total de productos: {{ productos().length }}</h2>
 
-    <button
-      type="button"
-      (click)="cargarProductos()"
-      [disabled]="cargando()"
-    >
-      Actualizar productos
-    </button>
-
-  </div>
+</div>
 
   @if (cargando()) {
     <p>Cargando productos...</p>

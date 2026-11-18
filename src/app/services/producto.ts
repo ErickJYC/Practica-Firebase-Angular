@@ -6,10 +6,12 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  doc
+  doc,
+  onSnapshot
 } from 'firebase/firestore';
 
 import { db } from '../firebase';
+import { Observable } from 'rxjs';
 
 export interface ProductoDatos {
   id: string;
@@ -25,6 +27,41 @@ export type DatosProducto = Omit<ProductoDatos, 'id'>;
 export class Producto {
 
   private referencia = collection(db, 'productos');
+  
+
+  // ESCUCHAR LOS PRODUCTOS EN TIEMPO REAL
+  escucharProductos(): Observable<ProductoDatos[]> {
+
+    return new Observable<ProductoDatos[]>(observador => {
+
+      const cancelarEscucha = onSnapshot(
+        this.referencia,
+
+        resultado => {
+          const lista: ProductoDatos[] = resultado.docs.map(documento => {
+            const datos = documento.data();
+
+            return {
+              id: documento.id,
+              nombre: datos['nombre'],
+              precio: datos['precio'],
+              stock: datos['stock'],
+              categoria: datos['categoria']
+            } as ProductoDatos;
+          });
+
+          observador.next(lista);
+        },
+
+        error => {
+          observador.error(error);
+        }
+      );
+
+      return () => cancelarEscucha();
+    });
+  }
+
 
   // READ: consultar productos
   async obtenerProductos(): Promise<ProductoDatos[]> {

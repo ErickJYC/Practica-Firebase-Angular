@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import {
   Producto,
@@ -37,6 +38,7 @@ export class Productos implements OnInit, OnDestroy {
   private cancelarObservador?: () => void;
 
   productos = signal<ProductoDatos[]>([]);
+  private suscripcionProductos?: Subscription;
   usuario = signal<User | null>(null);
 
   cargando = signal(false);
@@ -57,17 +59,37 @@ export class Productos implements OnInit, OnDestroy {
     };
   }
 
+
   ngOnInit(): void {
     this.cancelarObservador = onAuthStateChanged(
       auth,
       usuario => this.usuario.set(usuario)
     );
 
-    this.cargarProductos();
+    this.cargando.set(true);
+
+    this.suscripcionProductos =
+      this.productoService.escucharProductos().subscribe({
+
+        next: (lista) => {
+          this.productos.set(lista);
+          this.cargando.set(false);
+          this.error.set('');
+        },
+
+        error: (error) => {
+          console.error('Error al escuchar Firestore:', error);
+          this.error.set('No se pudieron escuchar los productos.');
+          this.cargando.set(false);
+        }
+
+      });
   }
+
 
   ngOnDestroy(): void {
     this.cancelarObservador?.();
+    this.suscripcionProductos?.unsubscribe();
   }
 
   // AUTENTICACIÓN CON GOOGLE
@@ -90,22 +112,6 @@ export class Productos implements OnInit, OnDestroy {
     } catch (error) {
       console.error(error);
       this.error.set('No se pudo cerrar sesión.');
-    }
-  }
-
-  // READ
-  async cargarProductos(): Promise<void> {
-    this.cargando.set(true);
-    this.error.set('');
-
-    try {
-      const lista = await this.productoService.obtenerProductos();
-      this.productos.set(lista);
-    } catch (error) {
-      console.error(error);
-      this.error.set('No se pudieron cargar los productos.');
-    } finally {
-      this.cargando.set(false);
     }
   }
 
@@ -150,7 +156,6 @@ export class Productos implements OnInit, OnDestroy {
       }
 
       this.cancelarEdicion();
-      await this.cargarProductos();
 
     } catch (error) {
       console.error(error);
@@ -206,7 +211,6 @@ export class Productos implements OnInit, OnDestroy {
       }
 
       this.mensaje.set('Producto eliminado correctamente.');
-      await this.cargarProductos();
 
     } catch (error) {
       console.error(error);
